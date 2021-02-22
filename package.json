@@ -1,0 +1,40 @@
+{
+  "name": "kuma-cli",
+  "version": "0.0.1",
+  "description": "kuma自用命令行工具包，基于vue-cli修改",
+  "main": "bin/kuma.js",
+  "keywords": [
+    "kuma",
+    "cli"
+  ],
+  "author": "xiek",
+  "license": "996.icu",
+  "dependencies": {
+    "boxen": "^5.0.0",
+    "chalk": "^4.1.0",
+    "commander": "^7.0.0",
+    "debug": "^4.3.1",
+    "deepmerge": "^4.2.2",
+    "download-git-repo": "^3.0.2",
+    "envinfo": "^7.7.3",
+    "execa": "^5.0.0",
+    "fs-extra": "^9.1.0",
+    "inquirer": "^7.3.3",
+    "javascript-stringify": "^2.0.1",
+    "jscodeshift": "^0.11.0",
+    "leven": "^3.1.0",
+    "lodash.clonedeep": "^4.5.0",
+    "lru-cache": "^6.0.0",
+    "ora": "^5.3.0",
+    "p-map": "^4.0.0",
+    "package-json": "^6.5.0",
+    "read-pkg": "^5.2.0",
+    "semver": "^7.3.4",
+    "slash": "^3.0.0",
+    "strip-ansi": "^6.0.0",
+    "validate-npm-package-name": "^3.0.0"
+  },
+  "engines": {
+    "node": ">= 14.15.0"
+  }
+}
