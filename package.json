@@ -7,8 +7,16 @@
     "kuma",
     "cli"
   ],
-  "author": "xiek",
+  "author": "xiek <285985285@qq.com>",
   "license": "996.icu",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xiek881028/kuma-bootstrap.git"
+  },
+  "bugs": {
+    "url": "https://github.com/xiek881028/kuma-bootstrap/issues"
+  },
+  "homepage": "https://github.com/xiek881028/kuma-bootstrap#readme",
   "dependencies": {
     "boxen": "^5.0.0",
     "chalk": "^4.1.0",
