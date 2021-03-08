@@ -1,6 +1,6 @@
 {
   "name": "kuma-bootstrap",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "kuma自用命令行工具包，基于vue-cli修改",
   "main": "bin/kuma.js",
   "keywords": [
