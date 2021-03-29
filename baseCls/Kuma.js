@@ -7,16 +7,23 @@ const chalk = require('chalk');
 const path = require('path');
 const semver = require('semver');
 const leven = require('leven');
+const { setInfo } = require('../lib/util/env');
 const pkg = require('../package.json');
 
 module.exports = class Cli {
   constructor(ops = {}) {
-    const { needNodeVersion, packageName } = ops;
+    const { packageName, version, needNodeVersion } = ops;
+
+    this.packageName = packageName ?? pkg.name;
+    this.version = version ?? pkg.version;
     this.checkNodeVersion(
       needNodeVersion ?? pkg.engines.node,
-      packageName ?? pkg.name
+      this.packageName
     );
-
+    setInfo({
+      packageName: this.packageName,
+      version: this.version,
+    });
     this.bin = this.binName();
     this.command = this.register();
 
@@ -44,7 +51,11 @@ module.exports = class Cli {
     };
 
     program
-      .version(`${pkg.name} ${pkg.version}`, '-v, --version', '查看版本')
+      .version(
+        `${this.packageName} ${this.version}`,
+        '-v, --version',
+        '查看版本'
+      )
       .helpOption('-h, --help', '获取帮助')
       .addHelpCommand('help [command]', '获取对应[command]命令的帮助信息')
       .usage('<command> [options]');
@@ -68,33 +79,26 @@ module.exports = class Cli {
           _program.action((key, options) => {
             // class 与 action 二选一执行，action优先级高于class
             if (action) {
-              (action ?? (() => {}))(key, options);
+              (action ?? (() => {}))(key, options, {
+                packageName: this.packageName,
+                version: this.version,
+              });
             } else {
-              const cls = new Cls(key, options);
+              const cls = new Cls(key, options, {
+                packageName: this.packageName,
+                version: this.version,
+              });
               cls.run(key, options);
             }
           });
         }
       }
-      // const _program = program
-      //   .command(el.command)
-      //   .description(el.description)
-      //   .action((key, options) => {
-      //     // class 与 action 二选一执行，action优先级高于class
-      //     if (el.action) {
-      //       (el.action ?? (() => {}))(key, options);
-      //     } else {
-      //       const cls = new el.class({ key, options });
-      //       cls.run({ key, options });
-      //     }
-      //   });
-      // (el.options ?? []).map(item => _program.option(...item));
     }
 
     // 在用户输入未知命令时显示帮助信息
     program.on('command:*', ([cmd]) => {
-      // program.outputHelp()
-      console.log(`  ` + chalk.red(`未知的命令 ${chalk.yellow(cmd)}.`));
+      program.outputHelp();
+      console.log(`  ` + chalk.red(`未知的命令： ${chalk.yellow(cmd)}`));
       console.log();
       suggestCommands(cmd);
       process.exitCode = 1;

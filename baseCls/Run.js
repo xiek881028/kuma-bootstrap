@@ -83,9 +83,9 @@ module.exports = class Run extends EventEmitter {
   }
 
   async #run(pluginName, options, context = process.cwd()) {
-    // if (!(await confirmIfGitDirty(context))) {
-    //   return;
-    // }
+    if (!(await confirmIfGitDirty(context))) {
+      return;
+    }
 
     delete options._;
     const pkg = getPkg(context);
@@ -104,18 +104,17 @@ module.exports = class Run extends EventEmitter {
       }
     };
 
-    // const id = findPlugin(pkg.devDependencies) || findPlugin(pkg.dependencies);
-    // if (!id) {
-    //   throw new Error(
-    //     `未能在package.json加载插件 ${chalk.yellow(pluginName)}。` +
-    //       `是否忘记安装了？`
-    //   );
-    // }
+    const id = findPlugin(pkg.devDependencies) || findPlugin(pkg.dependencies);
+    if (!id) {
+      throw new Error(
+        `未能在package.json加载插件 ${chalk.yellow(pluginName)}。` +
+          `是否忘记安装了？`
+      );
+    }
 
-    let id = pluginName;
     const pluginGenerator = loadModule(`${id}/generator`, context);
     if (!pluginGenerator) {
-      throw new Error(`Plugin ${id} does not have a generator.`);
+      throw new Error(`插件 ${id} 未找到需要调用的生成器`);
     }
 
     // resolve options if no command line options (other than --registry) are passed,
@@ -142,8 +141,6 @@ module.exports = class Run extends EventEmitter {
         pluginOptions = await prompt(pluginPrompts);
       }
     }
-    console.log('pluginOptions: ', pluginOptions);
-    return;
 
     const plugin = {
       id,

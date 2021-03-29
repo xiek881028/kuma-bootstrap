@@ -32,11 +32,11 @@ module.exports = class Add extends EventEmitter {
 
     const pm = new PackageManager({ context: context });
 
-    // if (pluginVersion) {
-    //   await pm.add(`${packageName}@${pluginVersion}`);
-    // } else {
-    //   await pm.add(packageName, { tilde: true });
-    // }
+    if (pluginVersion) {
+      await pm.add(`${packageName}@${pluginVersion}`);
+    } else {
+      await pm.add(packageName, { tilde: true });
+    }
 
     log(`${chalk.green('✔')}  插件安装成功: ${chalk.cyan(packageName)}`);
     log();
