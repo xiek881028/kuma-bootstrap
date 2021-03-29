@@ -1,3 +1,8 @@
+/**
+ * @file create基类
+ * @author xiek(285985285@qq.com)
+ */
+
 const EventEmitter = require('events');
 const fs = require('fs-extra');
 const path = require('path');
@@ -13,11 +18,11 @@ const Creator = require('../lib/Creator');
 
 module.exports = class Create extends EventEmitter {
   // 参数传递进来，冗余给继承类需要时使用
-  constructor({ key, options, config }) {
+  constructor(key, options) {
     super();
   }
 
-  async create({ key: projectName, options, config }) {
+  async #create(projectName, options = {}) {
     this.emit('create', { event: 'create-start' });
     // 当前工作目录
     const cwd = options.cwd || process.cwd();
@@ -29,12 +34,14 @@ module.exports = class Create extends EventEmitter {
     const result = validateProjectName(name);
     if (!result.validForNewPackages) {
       console.error(chalk.red(`工程名不符合npm包规则: "${name}"`));
-      result.errors && result.errors.forEach(err => {
-        console.error(chalk.red.dim('Error: ' + err));
-      });
-      result.warnings && result.warnings.forEach(warn => {
-        console.error(chalk.red.dim('Warning: ' + warn));
-      });
+      result.errors &&
+        result.errors.forEach(err => {
+          console.error(chalk.red.dim('Error: ' + err));
+        });
+      result.warnings &&
+        result.warnings.forEach(warn => {
+          console.error(chalk.red.dim('Warning: ' + warn));
+        });
       // 原先为了测试不退出，抛出错误。目前没有单元测试，暂时改为程序退出
       process.exit(1);
     }
@@ -49,8 +56,8 @@ module.exports = class Create extends EventEmitter {
             {
               name: 'ok',
               type: 'confirm',
-              message: `在当前目录中生成项目吗？`
-            }
+              message: `在当前目录中生成项目吗？`,
+            },
           ]);
           if (!ok) {
             return;
@@ -64,9 +71,9 @@ module.exports = class Create extends EventEmitter {
               choices: [
                 { name: '合并', value: 'merge' },
                 { name: '重写', value: 'overwrite' },
-                { name: '取消', value: false }
-              ]
-            }
+                { name: '取消', value: false },
+              ],
+            },
           ]);
           if (!action) {
             return;
@@ -83,7 +90,7 @@ module.exports = class Create extends EventEmitter {
     this.emit('create', { event: 'create-done' });
   }
 
-  async plugin(obj) { }
+  async plugin(obj) {}
 
   config() {
     const outroPrompts = [];
@@ -91,20 +98,20 @@ module.exports = class Create extends EventEmitter {
     packageManagerChoices.push({
       name: 'NPM',
       value: 'npm',
-      short: 'NPM'
+      short: 'NPM',
     });
     if (hasYarn()) {
       packageManagerChoices.push({
         name: 'Yarn',
         value: 'yarn',
-        short: 'Yarn'
+        short: 'Yarn',
       });
     }
     if (hasPnpm3OrLater()) {
       packageManagerChoices.push({
         name: 'PNPM',
         value: 'pnpm',
-        short: 'PNPM'
+        short: 'PNPM',
       });
     }
     outroPrompts.push({
@@ -129,13 +136,17 @@ module.exports = class Create extends EventEmitter {
   run(...args) {
     // app-name输入超过一个
     if (minimist(process.argv.slice(3))._.length > 1) {
-      console.log(chalk.yellow('\n 警告: 您提供了多个app-name，第一个将作为应用名称，其余的将被忽略'));
+      console.log(
+        chalk.yellow(
+          '\n 警告: 您提供了多个app-name，第一个将作为应用名称，其余的将被忽略'
+        )
+      );
     }
     // --git makes commander to default git to true
     if (process.argv.includes('-g') || process.argv.includes('--git')) {
-      options.forceGit = true
+      options.forceGit = true;
     }
-    return this.create(...args).catch(err => {
+    return this.#create(...args).catch(err => {
       stopSpinner(false); // do not persist
       error(err);
       if (!process.env.KUMA_TEST) {

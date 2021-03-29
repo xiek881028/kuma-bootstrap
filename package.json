@@ -7,6 +7,9 @@
     "kuma",
     "cli"
   ],
+  "bin": {
+    "kuma": "bin/kuma.js"
+  },
   "author": "xiek <285985285@qq.com>",
   "license": "996.icu",
   "repository": {
@@ -27,12 +30,15 @@
     "envinfo": "^7.7.3",
     "execa": "^5.0.0",
     "fs-extra": "^9.1.0",
+    "globby": "^11.0.3",
     "inquirer": "^7.3.3",
+    "isbinaryfile": "^4.0.6",
     "javascript-stringify": "^2.0.1",
     "jscodeshift": "^0.11.0",
     "leven": "^3.1.0",
     "lodash.clonedeep": "^4.5.0",
     "lru-cache": "^6.0.0",
+    "minimist": "^1.2.5",
     "nanoid": "^3.1.20",
     "ora": "^5.3.0",
     "p-map": "^4.0.0",
@@ -45,5 +51,11 @@
   },
   "engines": {
     "node": ">= 14.15.0"
+  },
+  "prettier": {
+    "semi": true,
+    "singleQuote": true,
+    "jsxSingleQuote": true,
+    "arrowParens": "avoid"
   }
 }
