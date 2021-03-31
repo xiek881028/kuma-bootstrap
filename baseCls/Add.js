@@ -6,7 +6,7 @@
 const EventEmitter = require('events');
 const chalk = require('chalk');
 const minimist = require('minimist');
-const { error, log } = require('../lib/util/logger');
+const { error, log, warn } = require('../lib/util/logger');
 const { resolvePluginId } = require('../lib/util/pluginResolution');
 const { resolveModule } = require('../lib/util/module');
 const PackageManager = require('../lib/util/ProjectPackageManager');
@@ -32,10 +32,15 @@ module.exports = class Add extends EventEmitter {
 
     const pm = new PackageManager({ context: context });
 
-    if (pluginVersion) {
-      await pm.add(`${packageName}@${pluginVersion}`);
+    if (options.dev) {
+      warn(`当前处于开发模式，将会从本地 link 插件包`);
+      await pm.link([packageName]);
     } else {
-      await pm.add(packageName, { tilde: true });
+      if (pluginVersion) {
+        await pm.add(`${packageName}@${pluginVersion}`);
+      } else {
+        await pm.add(packageName, { tilde: true });
+      }
     }
 
     log(`${chalk.green('✔')}  插件安装成功: ${chalk.cyan(packageName)}`);

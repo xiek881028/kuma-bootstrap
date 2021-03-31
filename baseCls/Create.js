@@ -134,6 +134,7 @@ module.exports = class Create extends EventEmitter {
   }
 
   run(...args) {
+    const [projectName, options] = args;
     // app-name输入超过一个
     if (minimist(process.argv.slice(3))._.length > 1) {
       console.log(
@@ -146,7 +147,7 @@ module.exports = class Create extends EventEmitter {
     if (process.argv.includes('-g') || process.argv.includes('--git')) {
       options.forceGit = true;
     }
-    return this.#create(...args).catch(err => {
+    return this.#create(projectName, options).catch(err => {
       stopSpinner(false); // do not persist
       error(err);
       if (!process.env.KUMA_TEST) {

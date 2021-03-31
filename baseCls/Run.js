@@ -7,7 +7,7 @@ const EventEmitter = require('events');
 const inquirer = require('inquirer');
 const chalk = require('chalk');
 const minimist = require('minimist');
-const { error, log } = require('../lib/util/logger');
+const { error, log, warn } = require('../lib/util/logger');
 const { resolvePluginId } = require('../lib/util/pluginResolution');
 const { loadModule } = require('../lib/util/module');
 const PackageManager = require('../lib/util/ProjectPackageManager');
@@ -104,7 +104,13 @@ module.exports = class Run extends EventEmitter {
       }
     };
 
-    const id = findPlugin(pkg.devDependencies) || findPlugin(pkg.dependencies);
+    let id = '';
+    if (options.dev) {
+      warn(`当前处于开发模式，将会忽略package.json检查`);
+      id = resolvePluginId(pluginName);
+    } else {
+      id = findPlugin(pkg.devDependencies) || findPlugin(pkg.dependencies);
+    }
     if (!id) {
       throw new Error(
         `未能在package.json加载插件 ${chalk.yellow(pluginName)}。` +
@@ -121,6 +127,8 @@ module.exports = class Run extends EventEmitter {
     // and the plugin contains a prompt module.
     // eslint-disable-next-line prefer-const
     let { registry, $inlineOptions, ...pluginOptions } = options;
+    // 删除 dev 标识以绕开后续检查
+    delete pluginOptions.dev;
     if ($inlineOptions) {
       try {
         pluginOptions = JSON.parse($inlineOptions);
