@@ -18,6 +18,7 @@ const Generator = require('../lib/util/Generator');
 const { stopSpinner, logWithSpinner } = require('../lib/util/spinner');
 const getChangedFiles = require('../lib/util/getChangedFiles');
 
+// TODO 考虑 context 是否指向项目根路径，目前只能在根路径 run，否则项目报错
 async function runGenerator(context, plugin, pkg = getPkg(context)) {
   const isTestOrDebug = process.env.KUMA_CLI_TEST || process.env.KUMA_CLI_DEBUG;
   const afterInvokeCbs = [];
@@ -33,11 +34,8 @@ async function runGenerator(context, plugin, pkg = getPkg(context)) {
   });
 
   log();
-  log(`🚀  安装kuma插件 ${plugin.id}...`);
-  await generator.generate({
-    extractConfigFiles: true,
-    checkExisting: true,
-  });
+  log(`🚀  调用kuma插件 ${plugin.id}...`);
+  await generator.generate();
 
   const newDeps = generator.pkg.dependencies;
   const newDevDeps = generator.pkg.devDependencies;

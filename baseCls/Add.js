@@ -30,7 +30,7 @@ module.exports = class Add extends EventEmitter {
     log(`📦  安装 ${chalk.cyan(packageName)}...`);
     log();
 
-    const pm = new PackageManager({ context: context });
+    const pm = new PackageManager({ context });
 
     if (options.dev) {
       warn(`当前处于开发模式，将会从本地 link 插件包`);
