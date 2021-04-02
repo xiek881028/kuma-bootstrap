@@ -8,6 +8,7 @@ const path = require('path');
 const semver = require('semver');
 const leven = require('leven');
 const { setInfo } = require('../lib/util/env');
+const { add, run, info } = require('../action');
 const pkg = require('../package.json');
 
 module.exports = class Cli {
@@ -119,7 +120,11 @@ module.exports = class Cli {
   }
 
   register() {
-    return {};
+    return {
+      add,
+      run,
+      info,
+    };
   }
 
   binName() {
