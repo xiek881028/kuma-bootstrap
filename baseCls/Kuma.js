@@ -15,10 +15,10 @@ module.exports = class Cli {
   constructor(ops = {}) {
     const { packageName, version, needNodeVersion } = ops;
 
-    this.packageName = packageName ?? pkg.name;
-    this.version = version ?? pkg.version;
+    this.packageName = packageName || pkg.name;
+    this.version = version || pkg.version;
     this.checkNodeVersion(
-      needNodeVersion ?? pkg.engines.node,
+      needNodeVersion || pkg.engines.node,
       this.packageName
     );
     setInfo({
